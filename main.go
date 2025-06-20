@@ -8,5 +8,7 @@ import (
 
 func main() {
 	folderPath := "/Users/brluser/Desktop/sampleApp"
-	utils.GetProjectBundle(folderPath)
+	prodBundle := utils.GetProjectBundle(folderPath)
+
+	fmt.Println(prodBundle)
 }

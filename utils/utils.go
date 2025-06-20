@@ -1,28 +1,67 @@
 package utils
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/tidwall/gjson"
 )
 
-func GetProjectBundle(folderPath string) {
+func GetProjectBundle(folderPath string) string {
 	// find the xcodeproj file in the folder
 	xcodeprojPath := GetXcodeprojPath(folderPath)
 	pbxprojPath := filepath.Join(folderPath, xcodeprojPath, "project.pbxproj")
 
 	// read the file bytes
-	data, err := os.ReadFile(pbxprojPath)
+	d, err := os.ReadFile(pbxprojPath)
 	if err != nil {
 		log.Fatal("[-] Failed while trying to read the buffer form file : "+pbxprojPath+"\n", err.Error())
 	}
 
-	json := gjson.ParseBytes(data)
-	fmt.Println(json)
+	data := strings.Split(string(d), "\n")
+
+	section := false
+	foundReleaseConfig := false
+	l_no := 0
+
+	var releaseBuildConfig string
+	var productBundle string
+
+	for i := 0; i < len(data); i++ {
+		line := data[i]
+
+		if !foundReleaseConfig {
+			if strings.Contains(line, "/* Begin XCConfigurationList section */") {
+				section = true
+			}
+
+			if section {
+				if l_no != 14 {
+					l_no++
+					continue
+				}
+				releaseBuildConfig = strings.TrimSpace(strings.Split(line, "/")[0])
+				foundReleaseConfig = true
+				i = 0
+			}
+			continue
+		}
+
+		if strings.Contains(line, releaseBuildConfig) {
+			section = true
+			l_no = 0
+		}
+
+		if section {
+			if strings.Contains(line, "PRODUCT_BUNDLE_IDENTIFIER") {
+				productBundle = strings.Split(strings.TrimSpace(strings.Split(line, "=")[1]), ";")[0]
+			}
+		}
+
+	}
+
+	return productBundle
 }
 
 func GetXcodeprojPath(folderPath string) string {
@@ -32,8 +71,11 @@ func GetXcodeprojPath(folderPath string) string {
 	}
 
 	for _, entry := range dirs {
-		if entry.IsDir() && strings.Split(entry.Name(), ".")[1] == "xcodeproj" {
-			return entry.Name()
+		if entry.IsDir() {
+			parts := strings.Split(entry.Name(), ".")
+			if len(parts) > 1 && parts[len(parts)-1] == "xcodeproj" {
+				return entry.Name()
+			}
 		}
 	}
 
