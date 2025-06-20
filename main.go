@@ -17,7 +17,13 @@ func main() {
 	files := utils.ReadSwiftFiles(filepath.Join(folderPath, projName))
 
 	for _, file := range files {
-		_strings := utils.FindStrings(file.Code)
-		fmt.Println(file.Name, ":", _strings)
+		s := utils.FindStrings(file.Code)
+
+		for i := range len(s) {
+			s[i].Encrypted = s[i].Encrypt()
+			fmt.Println(s[i].String)
+		}
+
+		fmt.Println(file.Name, ":", s)
 	}
 }

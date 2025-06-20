@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"regexp"
+
+	"string_encryption/types"
 )
 
 func GetProjectBundle(folderPath string) string {
@@ -83,14 +85,14 @@ func GetXcodeprojPath(folderPath string) string {
 	return ""
 }
 
-func ReadSwiftFiles (folderPath string) []File {
+func ReadSwiftFiles (folderPath string) []types.File {
 	// swift files starts with .swift extension
 	dirs, err := os.ReadDir(folderPath)
 	if err != nil {
 		log.Fatal("[-] Error occurred while trying to read directory at path:", folderPath, "\n", err.Error())
 	}
 
-	var swiftFiles []File
+	var swiftFiles []types.File
 
 	for _, entry := range dirs {
 		if !entry.IsDir() && strings.Contains(entry.Name(), ".swift") {
@@ -100,7 +102,7 @@ func ReadSwiftFiles (folderPath string) []File {
 				log.Fatal("[-] Failed while trying to read the buffer form file :", path, "\n", err.Error())
 			}
 
-			f := File{
+			f := types.File{
 				Name: entry.Name(),
 				Code: code,
 				Path: path,
@@ -112,15 +114,20 @@ func ReadSwiftFiles (folderPath string) []File {
 	return swiftFiles
 }
 
-func FindStrings(code []byte) []string {
-	re := regexp.MustCompile(`"([^"\\]|\\.)*"`)
-	matches := re.FindAll(code, -1)
+func FindStrings(code []byte) []types.String {
+	re := regexp.MustCompile(`"([^"\\]*(?:\\.[^"\\]*)*)"`)
 
-	var _strings []string
+	matches := re.FindAllSubmatch(code, -1)
+
+	var s []types.String
 
 	for _, match := range matches {
-		_strings = append(_strings, string(match))
+		str := types.String{
+			String: string(match[1]),
+		}
+
+		s = append(s, str)
 	}
 
-	return _strings
+	return s
 }
