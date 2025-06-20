@@ -82,7 +82,7 @@ func GetXcodeprojPath(folderPath string) string {
 	return ""
 }
 
-func ReadSwiftFiles (folderPath string) []string {
+func ReadSwiftFiles (folderPath string) []File {
 	// swift files starts with .swift extension
 	dirs, err := os.ReadDir(folderPath)
 	if err != nil {
@@ -108,7 +108,7 @@ func ReadSwiftFiles (folderPath string) []string {
 		}
 	}
 
-	return swiftFilePaths
+	return swiftFiles
 }
 
 func FindStrings(code []byte) {
