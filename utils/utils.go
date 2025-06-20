@@ -92,7 +92,7 @@ func ReadSwiftFiles (folderPath string) []string {
 	var swiftFilePaths []string
 
 	for _, entry := range dirs {
-		if !dirs.IsDir() && strings.Contains(entry.Name(), ".swift") {
+		if !entry.IsDir() && strings.Contains(entry.Name(), ".swift") {
 			swiftFilePaths = append(swiftFilePaths, filepath.Join(folderPath, entry.Name()))
 		}
 	}
