@@ -82,6 +82,20 @@ func GetXcodeprojPath(folderPath string) string {
 	return ""
 }
 
-func ReadSwiftFiles (folderPath string) {
-	
+func ReadSwiftFiles (folderPath string) []string {
+	// swift files starts with .swift extension
+	dirs, err := os.ReadDir(folderPath)
+	if err != nil {
+		log.Fatal("[-] Error occurred while trying to read directory at path:", folderPath, "\n", err.Error())
+	}
+
+	var swiftFilePaths []string
+
+	for _, entry := range dirs {
+		if !dirs.IsDir() && strings.Contains(entry.Name(), ".swift") {
+			swiftFilePaths = append(swiftFilePaths, filepath.Join(folderPath, entry.Name()))
+		}
+	}
+
+	return swiftFilePaths
 }
