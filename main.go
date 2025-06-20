@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+
+	"string_encryption/utils"
 )
 
 func main() {
-	fmt.Println("String Encryption!")
+	folderPath := "/Users/brluser/Desktop/sampleApp"
+	utils.GetProjectBundle(folderPath)
 }
