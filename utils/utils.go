@@ -16,7 +16,7 @@ func GetProjectBundle(folderPath string) string {
 	// read the file bytes
 	d, err := os.ReadFile(pbxprojPath)
 	if err != nil {
-		log.Fatal("[-] Failed while trying to read the buffer form file : "+pbxprojPath+"\n", err.Error())
+		log.Fatal("[-] Failed while trying to read the buffer form file :", pbxprojPath, "\n", err.Error())
 	}
 
 	data := strings.Split(string(d), "\n")
@@ -89,13 +89,28 @@ func ReadSwiftFiles (folderPath string) []string {
 		log.Fatal("[-] Error occurred while trying to read directory at path:", folderPath, "\n", err.Error())
 	}
 
-	var swiftFilePaths []string
+	var swiftFiles []File
 
 	for _, entry := range dirs {
 		if !entry.IsDir() && strings.Contains(entry.Name(), ".swift") {
-			swiftFilePaths = append(swiftFilePaths, filepath.Join(folderPath, entry.Name()))
+			path := filepath.Join(folderPath, entry.Name())
+			code, err := os.ReadFile(path)
+			if err != nil {
+				log.Fatal("[-] Failed while trying to read the buffer form file :", path, "\n", err.Error())
+			}
+
+			f := File{
+				Name: entry.Name(),
+				Code: code,
+				Path: path,
+			}
+			swiftFiles = append(swiftFiles, f)
 		}
 	}
 
 	return swiftFilePaths
+}
+
+func FindStrings(code []byte) {
+
 }
