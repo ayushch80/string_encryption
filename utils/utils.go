@@ -38,4 +38,5 @@ func GetXcodeprojPath(folderPath string) string {
 	}
 
 	log.Fatal("[-] Unable to find xcodeproj inside the folder :", folderPath)
+	return ""
 }
