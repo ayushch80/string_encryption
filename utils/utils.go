@@ -50,7 +50,6 @@ func GetProjectBundle(folderPath string) string {
 
 		if strings.Contains(line, releaseBuildConfig) {
 			section = true
-			l_no = 0
 		}
 
 		if section {
@@ -81,4 +80,8 @@ func GetXcodeprojPath(folderPath string) string {
 
 	log.Fatal("[-] Unable to find xcodeproj inside the folder :", folderPath)
 	return ""
+}
+
+func ReadSwiftFiles (folderPath string) {
+	
 }

@@ -10,5 +10,7 @@ func main() {
 	folderPath := "/Users/brluser/Desktop/sampleApp"
 	prodBundle := utils.GetProjectBundle(folderPath)
 
-	fmt.Println(prodBundle)
+	projName := strings.Split(prodBundle, ".")[len(strings.Split(prodBundle, "."))-1]
+
+	fmt.Println(projName)
 }
