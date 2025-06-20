@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"regexp"
 )
 
 func GetProjectBundle(folderPath string) string {
@@ -111,6 +112,15 @@ func ReadSwiftFiles (folderPath string) []File {
 	return swiftFiles
 }
 
-func FindStrings(code []byte) {
+func FindStrings(code []byte) []string {
+	re := regexp.MustCompile(`"([^"\\]|\\.)*"`)
+	matches := re.FindAll(code, -1)
 
+	var _strings []string
+
+	for _, match := range matches {
+		_strings = append(_strings, string(match))
+	}
+
+	return _strings
 }
