@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"strings"
+	"path/filepath"
 
 	"string_encryption/utils"
 )
@@ -12,5 +14,6 @@ func main() {
 
 	projName := strings.Split(prodBundle, ".")[len(strings.Split(prodBundle, "."))-1]
 
-	fmt.Println(projName)
+	files := utils.ReadSwiftFiles(filepath.Join(prodBundle, projName))
+	fmt.Println(files)
 }
